@@ -19,7 +19,7 @@ function init() {
 	// TODO: Put Mario on the ground instead of the cloud
 	Mario = {
 		x: 100,
-		y: 280,
+		y: 620,
 		w: 50,
 		h: 80,
 		JumpSound: new Audio('jump.wav'),
@@ -36,7 +36,9 @@ function init() {
 	draw();
 
 	// TODO: (OPTIONAL) set mario_08.wav as background music
-
+//	var mySound = new Audio('mario_08.wav');
+//	mySound.play();
+//	mySound.loop();
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -51,24 +53,25 @@ function draw() {
 	bgImage.onload = function(){
 		ctx.drawImage(bgImage, 0, 0);
 
-    }
-
-	/*
-	 * TODO: Draw Mario's initial image
-	 */
+    };
 
 
+	//TODO: Draw Mario's initial image/
+	//I need to make window.onload execute a funtion that draws mario at the right coords.
+	window.onLoad = function() {
+		ctx.drawImage(Mario.Image , Mario.x, Mario.y, Mario.w, Mario.h);
+	};
 	/////////////////////////////////////////////////////////////////
 	var render = function () {
 		ctx.drawImage(bgImage, 0, 0); 
 		renderMario();
-	}
+	};
 
 	/*
 	 * TODO: Alter the y coordinates so Mario will jump while on the ground
 	 */
 	function renderMario(){
-		if (Mario.y > 200 && Mario.moving == "up") {
+		if (Mario.y < 700 && Mario.moving == "up") {
 			Mario.Image.src = "mario2.png";
 			ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
 			// Change the y value each time 
@@ -107,28 +110,48 @@ function draw() {
     	var keycode = e.charCode || e.keyCode; // any kind of key
 		console.log(keycode);
 		// The user wants Mario to jump:
-    	if(keycode === 13 && Mario.moving == "no") {  
-        	Mario.timer = setInterval(render, Mario.timerInterval); 
-    	}
-
-
-
-    }
+    	if(keycode === 13 && Mario.moving == "no") {
+            Mario.timer = setInterval(render, Mario.timerInterval);
+        }
+        if (keycode === 39){
+    		Mario.Image.src = 'marioturnsright.png';
+    		ctx.drawImage(bgImage, 0 ,0);
+			ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
+			if (Mario.x < 1155) {
+				Mario.x += 15
+			}
+		}
+        if (keycode === 37){
+            Mario.Image.src = 'marioturnsleft.png';
+            ctx.drawImage(bgImage, 0 ,0);
+            ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
+            if (Mario.x > 0) {
+                Mario.x -= 15;
+            }
+        }
+    };
 
     /* TODO:
      * TODO: Capture keycodes for L and R. In each, set a timeout that calls a function
      * TODO: to face Mario forward after 200 ms. HINT: setTimeout(function, timeInMilliSecs)
      */
     document.body.onkeyup = function(e) {  // listen for a key
-
-    }
+        e = event || window.event;             // any kind of event
+        var keycode = e.charCode || e.keyCode; // any kind of key
+        console.log('I captured a key release');
+        if (keycode === 37 || keycode === 39) {
+            setTimeout(faceForward,200);
+        }
+    };
 
 
     /*
      * TODO: Face Mario forward. Do not forget to draw the background image first
      */
     function faceForward() {
-
+		Mario.Image.src = 'mario1.png';
+		ctx.drawImage(bgImage, 0 ,0);
+		ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
     }
 	
 } // close draw() 
